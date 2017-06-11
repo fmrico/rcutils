@@ -59,7 +59,7 @@ extern "C"
 RCUTILS_PUBLIC
 RCUTILS_WARN_UNUSED
 const char *
-rcutils_get_env(const char * env_name, const char ** env_value);
+rcutils_get_env(const char * env_name, char ** env_value);
 
 #if __cplusplus
 }

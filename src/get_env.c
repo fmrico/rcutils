@@ -19,16 +19,19 @@ extern "C"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "rcutils/get_env.h"
 
 #ifdef _WIN32
 # define WINDOWS_ENV_BUFFER_SIZE 2048
 RCUTILS_THREAD_LOCAL char __env_buffer[WINDOWS_ENV_BUFFER_SIZE];
+#else
+RCUTILS_THREAD_LOCAL char* __env_buffer;
 #endif  // WIN32
 
 const char *
-rcutils_get_env(const char * env_name, const char ** env_value)
+rcutils_get_env(const char * env_name, char ** env_value)
 {
   if (!env_name) {
     return "argument env_name is null";
@@ -44,9 +47,13 @@ rcutils_get_env(const char * env_name, const char ** env_value)
     return "unable to read environment variable";
   }
   __env_buffer[WINDOWS_ENV_BUFFER_SIZE - 1] = '\0';
-  *env_value = __env_buffer;
+  *env_value = malloc(strlen(__env_buffer) + 1);
+  memcpy(env_value, __env_buffer, strlen(__env_buffer));
 #else
-  *env_value = getenv(env_name);
+  __env_buffer = getenv(env_name);
+  *env_value = malloc(strlen(__env_buffer) + 1);
+  memcpy(*env_value, __env_buffer, strlen(__env_buffer) + 1);
+  
   if (NULL == *env_value) {
     *env_value = "";
   }

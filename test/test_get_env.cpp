@@ -28,7 +28,7 @@
  * These are set in the call to `ament_add_gtest()` in the `CMakeLists.txt`.
  */
 TEST(TestGetEnv, test_get_env) {
-  const char * env;
+  char * env;
   const char * ret;
   ret = rcutils_get_env("NORMAL_TEST", NULL);
   EXPECT_STREQ("argument env_value is null", ret);
